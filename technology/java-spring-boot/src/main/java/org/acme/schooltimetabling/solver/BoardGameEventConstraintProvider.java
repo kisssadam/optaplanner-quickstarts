@@ -27,10 +27,10 @@ public class BoardGameEventConstraintProvider implements ConstraintProvider {
 
     private Constraint actualGameIsPreferredGame(ConstraintFactory constraintFactory) {
         return constraintFactory
-                // Select each pair of 2 different lessons ...
+                // If the player's assigned game does not match with his/her preferred game
                 .forEach(Player.class)
                 .filter(player -> !Objects.equals(player.getAssignedGame().getName(), player.getPreferredGame().getName()))
-                // ... penalize with a hard weight.
+                // then penalize it with a hard weight.
                 .penalize(HardSoftScore.ONE_HARD)
                 .asConstraint("Assigned game is not preferred game.");
     }
