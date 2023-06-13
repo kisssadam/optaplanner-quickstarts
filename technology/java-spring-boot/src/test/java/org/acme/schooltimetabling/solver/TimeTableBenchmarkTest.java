@@ -1,6 +1,6 @@
 package org.acme.schooltimetabling.solver;
 
-import org.acme.schooltimetabling.rest.TimeTableController;
+import org.acme.schooltimetabling.rest.BoardGameController;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class TimeTableBenchmarkTest {
 
     @Autowired
-    private TimeTableController timeTableController;
+    private BoardGameController timeTableController;
 
     @Autowired
     private PlannerBenchmarkFactory benchmarkFactory;
