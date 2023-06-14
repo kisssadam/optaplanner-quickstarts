@@ -4,76 +4,44 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.lookup.PlanningId;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
-@PlanningEntity
+import java.util.Objects;
+
 @Entity
 public class Player {
 
-    @PlanningId
     @Id
     @GeneratedValue
-    private Long id;
+    public Long id;
 
-    private String name;
-
-    @PlanningVariable
-    @ManyToOne
-    private Game assignedGame;
+    public String name;
 
     @ManyToOne
-    private Game preferredGame;
+    public Game preferredGame;
 
-    // No-arg constructor required for Hibernate and OptaPlanner
+    @SuppressWarnings("unused")
     public Player() {
-    }
-
-    public Player(String name, Game assignedGame, Game preferredGame) {
-        this.name = name;
-        this.assignedGame = assignedGame;
-        this.preferredGame = preferredGame;
-    }
-
-    public Player(Long id, String name, Game assignedGame, Game preferredGame) {
-        this.id = id;
-        this.name = name;
-        this.assignedGame = assignedGame;
-        this.preferredGame = preferredGame;
     }
 
     @Override
     public String toString() {
         return "Player{" + "id=" + id +
                 ", name=" + name +
-                ", assignedGame=" + assignedGame +
                 ", preferredGame=" + preferredGame +
                 '}';
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return Objects.equals(name, player.name);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Game getAssignedGame() {
-        return assignedGame;
-    }
-
-    public void setAssignedGame(Game assignedGame) {
-        this.assignedGame = assignedGame;
-    }
-
-    public Game getPreferredGame() {
-        return preferredGame;
-    }
-
-    public void setPreferredGame(Game preferredGame) {
-        this.preferredGame = preferredGame;
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
 }

@@ -2,7 +2,7 @@ package org.acme.schooltimetabling.rest;
 
 import org.acme.schooltimetabling.domain.BoardGameEvent;
 import org.acme.schooltimetabling.persistence.BoardGameEventRepository;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
@@ -21,7 +21,7 @@ public class BoardGameController {
     @Autowired
     private SolverManager<BoardGameEvent, Long> solverManager;
     @Autowired
-    private SolutionManager<BoardGameEvent, HardSoftScore> solutionManager;
+    private SolutionManager<BoardGameEvent, HardMediumSoftScore> solutionManager;
 
     // To try, GET http://localhost:8080/boardGameEvent
     @GetMapping()

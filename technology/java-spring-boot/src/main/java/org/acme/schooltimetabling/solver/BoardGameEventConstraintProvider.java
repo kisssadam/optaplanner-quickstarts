@@ -1,12 +1,11 @@
 package org.acme.schooltimetabling.solver;
 
+import org.acme.schooltimetabling.domain.GamePlayerAssignment;
 import org.acme.schooltimetabling.domain.Player;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-
-import java.util.Objects;
 
 public class BoardGameEventConstraintProvider implements ConstraintProvider {
 
@@ -14,7 +13,11 @@ public class BoardGameEventConstraintProvider implements ConstraintProvider {
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[]{
                 // Hard constraints
-                actualGameIsPreferredGame(constraintFactory)
+                // hardest constraint: host?
+                actualGameIsPreferredGame(constraintFactory),
+//                playerPlaysWithPreferredGroup(constraintFactory)
+
+
 //                roomConflict(constraintFactory),
 //                teacherConflict(constraintFactory),
 //                studentGroupConflict(constraintFactory),
@@ -27,13 +30,30 @@ public class BoardGameEventConstraintProvider implements ConstraintProvider {
 
     private Constraint actualGameIsPreferredGame(ConstraintFactory constraintFactory) {
         return constraintFactory
-                // If the player's assigned game does not match with his/her preferred game
-                .forEach(Player.class)
-                .filter(player -> !Objects.equals(player.getAssignedGame().getName(), player.getPreferredGame().getName()))
-                // then penalize it with a hard weight.
-                .penalize(HardSoftScore.ONE_HARD)
-                .asConstraint("Assigned game is not preferred game.");
+                .forEach(GamePlayerAssignment.class)
+                .join(Player.class)
+                // if player plays a non preferred game
+                .filter((gamePlayerAssignment, player) -> !player.preferredGame.equals(gamePlayerAssignment.game))
+                .penalize(HardMediumSoftScore.ONE_MEDIUM)
+                .asConstraint("Test");
+
+//        return constraintFactory
+//                 If the player's assigned game does not match with his/her preferred game
+//                .forEach(Player.class)
+//                .filter(player -> !Objects.equals(player.getAssignedGame().getName(), player.getPreferredGame().getName()))
+//                 then penalize it with a hard weight. TODO penalize with 3-(index of preferred game when there will be 3 preferred game).
+//                .penalize(HardSoftScore.ONE_HARD)
+//                .asConstraint("Assigned game is not preferred game.");
     }
+//
+//    private Constraint playerPlaysWithPreferredGroup(ConstraintFactory constraintFactory) {
+//        // TODO how to penalize if a player is in a group, but not part of the preferred group
+//        return constraintFactory
+//                .forEach(Player.class)
+//                .join(PlayerGroup.class, Joiners.filtering((player, playerGroup) -> !playerGroup.getPlayerList().contains(player)))
+//                .penalize(HardSoftScore.ONE_HARD)
+//                .asConstraint("Player is not playing with his/her preferred group.");
+//    }
 
 //
 //    Constraint roomConflict(ConstraintFactory constraintFactory) {

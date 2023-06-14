@@ -14,8 +14,15 @@ public class BoardGameEventRepository {
 
     @Autowired
     private GameRepository gameRepository;
+
     @Autowired
     private PlayerRepository playerRepository;
+
+    @Autowired
+    private PlayerGroupRepository playerGroupRepository;
+
+    @Autowired
+    private GamePlayerAssignmentRepository gamePlayerAssignmentRepository;
 
     public BoardGameEvent findById(Long id) {
         if (!SINGLETON_TIME_TABLE_ID.equals(id)) {
@@ -23,25 +30,20 @@ public class BoardGameEventRepository {
         }
         // Occurs in a single transaction, so each initialized lesson references the same timeslot/room instance
         // that is contained by the timeTable's timeslotList/roomList.
-        return new BoardGameEvent(
-                gameRepository.findAll(),
-                playerRepository.findAll());
+        BoardGameEvent boardGameEvent = new BoardGameEvent();
+        boardGameEvent.games = gameRepository.findAll();
+        boardGameEvent.players = playerRepository.findAll();
+        boardGameEvent.playerGroups = playerGroupRepository.findAll();
+        boardGameEvent.gamePlayerAssignments = gamePlayerAssignmentRepository.findAll();
+        return boardGameEvent;
     }
 
     public void save(BoardGameEvent boardGameEvent) {
-        boardGameEvent.getPlayerList().forEach(player -> {
-//            // TODO this is awfully naive: optimistic locking causes issues if called by the SolverManager
-            playerRepository.findById(player.getId()).ifPresent(p -> {
-                p.setAssignedGame(player.getAssignedGame());
-                p.setPreferredGame(player.getPreferredGame());
+        boardGameEvent.gamePlayerAssignments.forEach(gamePlayerAssignment -> {
+            gamePlayerAssignmentRepository.findById(gamePlayerAssignment.id).ifPresent(gpa -> {
+                gpa.players = gamePlayerAssignment.players;
             });
         });
-//        for (Lesson lesson : timeTable.getLessonList()) {
-//            lessonRepository.findById(lesson.getId()).ifPresent(attachedLesson -> {
-//                attachedLesson.setTimeslot(lesson.getTimeslot());
-//                attachedLesson.setRoom(lesson.getRoom());
-//            });
-//        }
     }
 
 }

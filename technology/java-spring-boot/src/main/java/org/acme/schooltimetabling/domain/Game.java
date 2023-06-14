@@ -4,26 +4,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.util.Objects;
+
 @Entity
 public class Game {
 
     @Id
     @GeneratedValue
-    private Long id;
+    public Long id;
 
-    private String name;
+    public String name;
 
-    // No-arg constructor required for Hibernate and OptaPlanner
+    @SuppressWarnings("unused")
     public Game() {
-    }
-
-    public Game(String name) {
-        this.name = name;
-    }
-
-    public Game(Long id, String name) {
-        this.id = id;
-        this.name = name;
     }
 
     @Override
@@ -34,19 +27,17 @@ public class Game {
                 '}';
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        return Objects.equals(name, game.name);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
