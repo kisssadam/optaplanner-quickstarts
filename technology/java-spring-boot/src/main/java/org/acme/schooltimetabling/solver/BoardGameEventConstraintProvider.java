@@ -14,9 +14,10 @@ public class BoardGameEventConstraintProvider implements ConstraintProvider {
         return new Constraint[]{
                 // Hard constraints
                 // hardest constraint: host?
+
+                // Medium constraints
                 actualGameIsPreferredGame(constraintFactory),
 //                playerPlaysWithPreferredGroup(constraintFactory)
-
 
 //                roomConflict(constraintFactory),
 //                teacherConflict(constraintFactory),
@@ -34,6 +35,7 @@ public class BoardGameEventConstraintProvider implements ConstraintProvider {
                 .join(Player.class)
                 // if player plays a non preferred game
                 .filter((gamePlayerAssignment, player) -> !player.preferredGame.equals(gamePlayerAssignment.game))
+                // penalize it with a Medium score
                 .penalize(HardMediumSoftScore.ONE_MEDIUM)
                 .asConstraint("Test");
 
